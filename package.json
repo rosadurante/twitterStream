@@ -1,0 +1,23 @@
+{
+  "name": "twitter-example",
+  "description": "An example using NodeJS, Twitter REST API and ReactJS",
+  "version": "0.0.1",
+  "author": "Rosa Durante <me@rosadurante.com> (http://rosadurante.com)",
+  "main": "./index.js",
+  "keywords": [ "node", "twitter", "example", "javascript", "react", "REST", "API" ],
+  "dependencies": {
+    "http": "*",
+    "express": "*",
+    "socket.io": "*",
+    "jade": "*",
+    "twit": "*"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
