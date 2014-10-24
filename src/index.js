@@ -5,13 +5,15 @@ Rosa Durante <me@rosadurante.com>
 Monday 13th Oct 2014
 */
 
-var http = require('http');
-var path = require('path');
-var routes = require('./routes');
-var express = require('express');
-var config = require('./oauth.js');
-var twitterAPI = require('twit');
-var server, twitter, io, stream;
+var http = require('http'),
+    path = require('path'),
+    routes = require('./routes'),
+    express = require('express'),
+    config = require('./oauth.js'),
+    sass = require('node-sass'),
+    sassMiddleware = require('node-sass-middleware'),
+    twitterAPI = require('twit'),
+    server, twitter, io, stream;
 
 var app = express();
 
@@ -20,6 +22,14 @@ var app = express();
 app.set('port', process.env.PORT || 8888);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+app.use(sassMiddleware({
+    src: __dirname + '/static/scss/',
+    dest: __dirname + '/static/css/',
+    debug: true
+  })
+);
+
 app.use(express.static(path.join(__dirname, 'static')));
 
 // Defined routers
@@ -32,6 +42,12 @@ server = http.createServer(app).listen(app.get('port'),
   }
 );
 
+sass.renderFile({
+  file: __dirname + '/static/scss/styles.scss',
+  outFile: __dirname + '/static/css/styles.css',
+  // Success needs to be defined even as an empty function
+  success: function () {}
+});
 
 // Twitter code
 twitter = new twitterAPI({
