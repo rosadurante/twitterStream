@@ -2,9 +2,34 @@
 
 // Definition of Tweet
 var Tweet = React.createClass({
+  replaceHashTags: function (text, hashtags) { this.props.text = text; },
+  replaceUrls: function (text, hashtags) { this.props.text = text; },
+  replaceUsers: function (text, hashtags) { this.props.text = text; },
+
   render: function () {
+    this.props.text = this.props.tweet.text;
+    this.replaceHashTags(this.props.tweet.text, this.props.tweet.entities.hashtags);
+    this.replaceUrls(this.props.tweet.text, this.props.tweet.entities.urls);
+    this.replaceUsers(this.props.tweet.text, this.props.tweet.entities.users);
+
+    var altImage = this.props.tweet.user.screen_name + " profile picture";
+
     return (
-      <li>{this.props.text}</li>
+      <li className="list-item tweet">
+        <div className="tweet-user">
+          <div className="user-picture">
+            <img src={this.props.tweet.user.profile_image_url} alt={altImage} />
+          </div>
+          <div className="user-name">
+            <span className="user-name__username">{this.props.tweet.user.name}</span>
+            (@<span className="user-name__screen">{this.props.tweet.user.screen_name}</span>)
+          </div>
+        </div>
+        <div className="tweet-details">
+          <p className="tweet-text">{this.props.text}</p>
+          <span className="tweet-time">{this.props.tweet.created_at}</span>
+        </div>
+      </li>
     )
   }
 });
@@ -14,11 +39,11 @@ var TweetList = React.createClass({
   render: function () {
     // Building all tweets from the list using the Tweet object.
     var tweets = this.props.data.map(function (tweet) {
-      return <Tweet text={tweet.text} />
+      return <Tweet tweet={tweet} />
     });
 
     return (
-      <div><ul>{tweets}</ul></div>
+      <div><ul className="list">{tweets}</ul></div>
     )
   }
 });
@@ -55,9 +80,9 @@ var TweetBox = React.createClass({
 
   render: function () {
     return (
-      <div>
-        <h1>Tweet search #javascript #js!</h1>
-        <TweetList data={this.state.data} />
+      <div className="container">
+        <h1 className="container--title">Tweet search #javascript #js!</h1>
+        <TweetList className="container--tweets" data={this.state.data} />
       </div>
     )
   }
