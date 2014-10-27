@@ -10,6 +10,7 @@ var http = require('http'),
     routes = require('./routes'),
     express = require('express'),
     config = require('./oauth.js'),
+    fs = require('node-fs'),
     watch = require('node-watch'),
     sass = require('node-sass'),
     sassMiddleware = require('node-sass-middleware'),
@@ -45,14 +46,29 @@ server = http.createServer(app).listen(app.get('port'),
   }
 );
 
-watch(__dirname + '/static/scss', function () {
-  sass.renderFile({
-    file: __dirname + '/static/scss/_import.scss',
-    outFile: __dirname + '/static/css/styles.css',
-    // Success needs to be defined even as an empty function
-    success: function (css) { console.log('Sass build on ', css); }
+// CSS
+
+var buildCSS = function (dirCSS, dirSASS) {
+
+  fs.exists(dirCSS, function (exists) {
+    if (!exists) { fs.mkdir(dirCSS); }
   });
-});
+
+  var _buildCSS = function () {
+    sass.renderFile({
+      file: dirSASS + '_import.scss',
+      outFile: dirCSS + 'styles.css',
+      // Success needs to be defined even as an empty function
+      success: function (css) { console.log('Sass build on ', css); }
+    });
+  }
+
+  watch(dirSASS, function () { _buildCSS(); });
+  _buildCSS();
+
+};
+
+buildCSS(__dirname + '/static/css/', __dirname + '/static/scss/');
 
 // Twitter code
 twitter = new twitterAPI({
