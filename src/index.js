@@ -10,6 +10,7 @@ var http = require('http'),
     routes = require('./routes'),
     express = require('express'),
     config = require('./oauth.js'),
+    watch = require('node-watch'),
     sass = require('node-sass'),
     sassMiddleware = require('node-sass-middleware'),
     twitterAPI = require('twit'),
@@ -24,8 +25,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(sassMiddleware({
-    src: __dirname + '/static/scss/',
-    dest: __dirname + '/static/css/',
+    src: __dirname + '/static/scss',
+    dest: __dirname + '/static/css',
+    prefix: '/css',
+    outputStyle: 'compressed',
     debug: true
   })
 );
@@ -42,11 +45,13 @@ server = http.createServer(app).listen(app.get('port'),
   }
 );
 
-sass.renderFile({
-  file: __dirname + '/static/scss/styles.scss',
-  outFile: __dirname + '/static/css/styles.css',
-  // Success needs to be defined even as an empty function
-  success: function () {}
+watch(__dirname + '/static/scss', function () {
+  sass.renderFile({
+    file: __dirname + '/static/scss/_import.scss',
+    outFile: __dirname + '/static/css/styles.css',
+    // Success needs to be defined even as an empty function
+    success: function (css) { console.log('Sass build on ', css); }
+  });
 });
 
 // Twitter code

@@ -9,6 +9,7 @@
     "http": "*",
     "express": "*",
     "socket.io": "*",
+    "node-watch": "*",
     "node-sass": "*",
     "node-sass-middleware": "*",
     "twit": "*"
